@@ -1,0 +1,75 @@
+#Creat the output Excel
+$excel_file_path = 'c:\temp\Servers_owners.xlsx'
+$Excel = New-Object -ComObject Excel.Application
+$ExcelWorkBook = $Excel.Workbooks.Open($excel_file_path)
+$ExcelWorkSheet = $Excel.WorkSheets.item("sheet1")
+$ExcelWorkSheet.activate()
+$ExcelWorkSheet.Visible = $True
+$row=1
+$col=1
+
+# Add the headers to the worksheet
+$headers = "Server","Responsible"
+$headers | foreach {
+    $ExcelWorkSheet.Cells.Item($row,$col)=$_
+    $col++    
+}
+
+#connect to the servers
+
+#connect-viserver dkavmw-c01,dkavmw-c02,dkavmw-c03,dkavmw-cu1,dkavmw-csg,dkavmw-cny,dkavmw-ckl,dkavmw-cji
+
+#the unknown servers list
+
+$servers = Get-Content -Path c:\temp\servers.txt
+
+#querying the names
+
+$i = 0 
+foreach ($s in $servers)
+{
+$line = get-vm | where {$_.name -like "$s*"} | select name 
+
+try
+ {
+
+#server name
+$sn= $line -split " "
+$srn= $sn[0] -replace "^@{Name="
+#appending the server name to the excel sheet
+$row++
+$col=1
+$ExcelWorkSheet.Cells.Item($Row,$col)=$srn
+
+#responsible name
+$re = $line -split "resp:"
+$res= $re[1] -replace "}$"
+#appending the server responsible to the excel sheet
+
+$col++
+$ExcelWorkSheet.Cells.Item($Row,$col)=$res
+
+#count the server index on the list
+
+$i++
+
+ }catch {
+  
+  #error handeling 
+  LogWrite ("Check row number: " + $i + " on your final excel sheet")
+  LogWrite ($Error[0].Exception)
+ 
+ }
+
+ 
+}
+
+
+#Close the workbook and exit Excel
+$ExcelWorkBook.Close($true)
+$Excel.quit()
+
+
+#disconnect to the servers
+
+#disconnect-viserver dkavmw-c01,dkavmw-c02,dkavmw-c03,dkavmw-cu1,dkavmw-csg,dkavmw-cny,dkavmw-ckl,dkavmw-cji

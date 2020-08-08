@@ -1,5 +1,5 @@
 #Creat the output Excel
-$excel_file_path = 'c:\temp\Servers_owners.xlsx'
+$excel_file_path = 'servers queried informtation list as excel file path'
 $Excel = New-Object -ComObject Excel.Application
 $ExcelWorkBook = $Excel.Workbooks.Open($excel_file_path)
 $ExcelWorkSheet = $Excel.WorkSheets.item("sheet1")
@@ -17,11 +17,11 @@ $headers | foreach {
 
 #connect to the servers
 
-#connect-viserver dkavmw-c01,dkavmw-c02,dkavmw-c03,dkavmw-cu1,dkavmw-csg,dkavmw-cny,dkavmw-ckl,dkavmw-cji
+#connect-viserver server1,server2,server3
 
 #the unknown servers list
 
-$servers = Get-Content -Path c:\temp\servers.txt
+$servers = Get-Content -Path c:\folder\servers to scan.txt
 
 #querying the names
 
@@ -72,4 +72,4 @@ $Excel.quit()
 
 #disconnect to the servers
 
-#disconnect-viserver dkavmw-c01,dkavmw-c02,dkavmw-c03,dkavmw-cu1,dkavmw-csg,dkavmw-cny,dkavmw-ckl,dkavmw-cji
+#disconnect-viserver server1,server2,server3
